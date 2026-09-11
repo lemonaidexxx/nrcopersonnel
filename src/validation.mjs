@@ -30,14 +30,17 @@ export function validateSubmission(input) {
     return { ok: false, data: null, errors: { form: 'The request contains unexpected fields.' } };
   }
   for (const name of FIELD_NAMES) {
-    const value = input[name] ?? (name === 'middleName' ? '' : undefined);
+    const value = input[name];
+    if (value === undefined || value === null) {
+      errors[name] = 'This field is required.'; continue;
+    }
     const max = name === 'email' ? 254 : name === 'office' ? 160 : name === 'contactNumber' ? 32 : 100;
     if (typeof value !== 'string' || value.length > max || /[\x00-\x1f\x7f]/.test(value)) {
       errors[name] = 'Enter a valid value within the field length limit.'; continue;
     }
     const text = name === 'email' ? value.trim() : sanitizeInput(value);
     data[name] = text;
-    if (!text && name !== 'middleName') errors[name] = 'This field is required.';
+    if (!text) errors[name] = 'This field is required.';
   }
   if (data.designation && !DESIGNATIONS.includes(data.designation)) errors.designation = 'Select a designation from the list.';
   if (data.office && !OFFICES.includes(data.office)) errors.office = 'Select an office from the list.';

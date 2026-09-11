@@ -3,11 +3,11 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 import { createHash, createHmac, randomUUID } from 'node:crypto';
-import { validateSubmission, HEADERS, DESIGNATIONS, OFFICES, SIZES } from '../src/validation.mjs';
+import { validateSubmission, FIELD_NAMES, HEADERS, DESIGNATIONS, OFFICES, SIZES } from '../src/validation.mjs';
 import { personnelForm } from '../src/form-definition.mjs';
 import { handleRequest, signEnvelope } from '../src/worker.mjs';
 const SECRET = 'a'.repeat(64); // TEST FIXTURE ONLY; never used as deployed configuration.
-const sample = () => ({ firstName: 'Test', middleName: '', lastName: 'Person', designation: 'Technical Staff', office: 'Program Development Unit', email: 'TEST@example.invalid', contactNumber: '09999999999', shirtSize: 'M' });
+const sample = () => ({ firstName: 'Test', middleName: 'Example', lastName: 'Person', designation: 'Technical Staff', office: 'Program Development Unit', email: 'TEST@example.invalid', contactNumber: '09999999999', shirtSize: 'M' });
 const env = () => ({ APP_ORIGIN: 'https://unit-test.invalid', APPS_SCRIPT_URL: 'https://script.google.com/macros/s/TEST_DEPLOYMENT/exec', RELAY_SECRET: SECRET,
   TURNSTILE_SITE_KEY: 'unit-site-key', TURNSTILE_SECRET_KEY: 'unit-secret-key', SUBMISSION_LIMITER: { limit: async () => ({ success: true }) } });
 function request(body, extraHeaders = {}) {
@@ -41,14 +41,36 @@ function gas() {
   vm.runInContext(readFileSync(new URL('../apps-script/Code.gs', import.meta.url), 'utf8'), context);
   return { state, context, post(envelope) { return JSON.parse(context.doPost({ postData: { type: 'application/json', contents: JSON.stringify(envelope) } }).text); } };
 }
-test('form uses the adapted upstream model with exactly 8 fields and approved choices', () => {
+test('form uses the adapted upstream model with exactly 8 required fields and approved choices', () => {
   assert.equal(personnelForm.getFields().length, 8);
+  for (const field of personnelForm.getFields()) assert.equal(field.data.required, true, field.id);
   for (const [name, values] of [['designation', DESIGNATIONS], ['office', OFFICES], ['shirtSize', SIZES]]) {
     const field = personnelForm.getFields().find(f => f.id === name);
     assert.deepEqual(field.getChoices().map(c => c.id), values);
     assert.equal(field.isValidValue(values[0]), true); assert.equal(field.isValidValue('unknown'), false);
   }
 });
+for (const name of FIELD_NAMES) {
+  test('requires ' + name + ' in shared validation, Worker and Apps Script', async () => {
+    const system = gas();
+    for (const value of [undefined, null, '', '   ', '\u00a0\u2003']) {
+      const data = { ...sample(), [name]: value };
+      if (value === undefined) delete data[name];
+      const validation = validateSubmission(data);
+      assert.equal(validation.ok, false);
+      assert.equal(validation.errors[name], 'This field is required.');
+      const response = await handleRequest(request({ ...body(), data }), env(), async () => {
+        throw new Error('Incomplete submissions must not reach an upstream service');
+      });
+      assert.equal(response.status, 422);
+      assert.equal((await response.json()).errors[name], 'This field is required.');
+      const result = system.post(await signEnvelope(data, randomUUID(), SECRET));
+      assert.equal(result.ok, false); assert.equal(result.code, 'INVALID_REQUEST');
+    }
+    assert.equal(system.state.writes, 0);
+    assert.equal(system.state.rows.length, 1);
+  });
+}
 test('normalizes whitespace without changing legitimate name/email capitalization', () => {
   const result = validateSubmission({ ...sample(), firstName: '  Maria   Ana  ', lastName: 'de la Cruz', email: '  Person@Example.invalid  ' });
   assert.equal(result.ok, true); assert.equal(result.data.firstName, 'Maria Ana'); assert.equal(result.data.email, 'Person@Example.invalid');
@@ -64,8 +86,9 @@ for (const phone of ['+14155552671', '0212345678', '0917123456', '091712345678',
 for (const change of [{firstName:''}, {office:'Other'}, {shirtSize:'XS'}, {designation:'Admin'}, {email:'bad@'}, {email:'a b@c.com'}, {firstName:'a'.repeat(101)}, {firstName:'A\u0000B'}, {timestamp:'forged'}]) {
   test('rejects malformed field ' + JSON.stringify(change), () => assert.equal(validateSubmission({ ...sample(), ...change }).ok, false));
 }
-test('permits optional middle name and legitimate Unicode names', () => {
-  const value = sample(); delete value.middleName; value.firstName = '\u00d1ina'; assert.equal(validateSubmission(value).ok, true);
+test('permits legitimate Unicode names with a required middle name', () => {
+  const result = validateSubmission({ ...sample(), firstName: '\u00d1ina', middleName: '  Mu\u00f1oz  ' });
+  assert.equal(result.ok, true); assert.equal(result.data.firstName, '\u00d1ina'); assert.equal(result.data.middleName, 'Mu\u00f1oz');
 });
 test('Worker and Apps Script agree on signed payload; saves one complete RAW row', async () => {
   const system = gas(); const id = randomUUID(); const signed = await signEnvelope(sample(), id, SECRET);
@@ -169,9 +192,15 @@ test('unsafe redirects and unconfirmed success are never reported as saved', asy
     assert.equal(response.status,503); assert.equal((await response.json()).ok,false);
   }
 });
-test('built assets contain no endpoint or spreadsheet ID and resolve every field', () => {
+test('built assets contain no endpoint or spreadsheet ID and require every respondent field', () => {
   const html = readFileSync(new URL('../dist/index.html', import.meta.url),'utf8');
   assert.equal(html.includes('{{'),false); assert.equal(html.includes('script.google.com'),false);
   assert.equal((html.match(/<select /g)||[]).length,3);
-  for (const name of ['firstName','middleName','lastName','designation','office','email','contactNumber','shirtSize']) assert.ok(html.includes(`id="${name}"`));
+  assert.equal(html.includes('(optional)'), false);
+  for (const name of FIELD_NAMES) {
+    const control = html.match(new RegExp('<(?:input|select)\\b[^>]*\\bid="' + name + '"[^>]*>'));
+    assert.ok(control, name); assert.match(control[0], /\brequired\b/, name);
+  }
+  const honeypot = html.match(/<input\b[^>]*\bid="website"[^>]*>/);
+  assert.ok(honeypot); assert.doesNotMatch(honeypot[0], /\brequired\b/);
 });

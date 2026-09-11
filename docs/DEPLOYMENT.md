@@ -14,7 +14,7 @@ test records were inserted during implementation.
 | A | Submission ID | Server-derived stable unique identifier, not a row number |
 | B | Timestamp | Server-generated ISO 8601 string with +08:00 Philippine time |
 | C | First Name | Required text, trim spaces, preserve capitalization |
-| D | Middle Name | Optional text, trim spaces, preserve capitalization |
+| D | Middle Name | Required text, trim spaces, preserve capitalization |
 | E | Last Name | Required text, trim spaces, preserve capitalization |
 | F | Designation | Required dropdown, one of the 15 approved options |
 | G | Office | Required dropdown, one of the six approved options |

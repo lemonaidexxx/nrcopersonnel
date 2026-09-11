@@ -25,8 +25,8 @@ Open the local address printed by preview. This preview never saves information.
 ## Approved behavior
 
 - Public link access, no respondent sign-in. This is not employee identity verification.
-- First and last names required; middle name optional. Whitespace is trimmed and
-  legitimate name/email capitalization preserved.
+- All eight respondent fields are required, including Middle Name. Whitespace is
+  trimmed and legitimate name/email capitalization preserved.
 - Exactly 15 designations and six offices from the supplied brief.
 - Philippine mobile numbers: 09XXXXXXXXX or +639XXXXXXXXX. Common separators are
   removed; the chosen national/international prefix is retained and stored as text.

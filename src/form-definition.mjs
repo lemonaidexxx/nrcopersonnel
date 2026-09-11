@@ -13,7 +13,7 @@ const definitions = [
 ];
 for (const [name, label, section, kind, maxLength, autocomplete] of definitions) {
   const common = { id: name, formId: personnelForm.id, fieldPropertiesId: name + '-properties', name, label,
-    required: name !== 'middleName', type: Array.isArray(kind) ? 'select' : 'text' };
+    required: true, type: Array.isArray(kind) ? 'select' : 'text' };
   let field;
   if (Array.isArray(kind)) {
     field = new SelectField(common, {});

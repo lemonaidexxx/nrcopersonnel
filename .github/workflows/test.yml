@@ -11,4 +11,5 @@ jobs:
         with:
           node-version: '22'
       - run: npm run build
+      - run: git diff --exit-code -- apps-script/Code.gs
       - run: npm test
