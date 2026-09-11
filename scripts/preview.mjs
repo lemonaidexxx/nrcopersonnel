@@ -2,7 +2,7 @@
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 const root = new URL('../dist/', import.meta.url);
-const allowed = new Map([['/', 'index.html'], ['/index.html', 'index.html'], ['/styles.css', 'styles.css'], ['/app.mjs', 'app.mjs'], ['/validation.mjs', 'validation.mjs'], ['/assets/shirt-size-guide.webp', 'assets/shirt-size-guide.webp']]);
+const allowed = new Map([['/', 'index.html'], ['/index.html', 'index.html'], ['/styles.css', 'styles.css'], ['/app.mjs', 'app.mjs'], ['/scrollspy.mjs', 'scrollspy.mjs'], ['/validation.mjs', 'validation.mjs'], ['/assets/shirt-size-guide.webp', 'assets/shirt-size-guide.webp']]);
 const mime = { html: 'text/html', css: 'text/css', mjs: 'text/javascript', webp: 'image/webp' };
 createServer(async (request, response) => {
   const pathname = new URL(request.url, 'http://127.0.0.1').pathname;

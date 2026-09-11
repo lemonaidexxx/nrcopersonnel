@@ -25,6 +25,7 @@ if (/{{\w+}}/.test(html)) throw new Error('Unresolved template field');
 await writeFile(path('dist/index.html'), html);
 await cp(path('web/styles.css'), path('dist/styles.css'));
 await cp(path('src/app.mjs'), path('dist/app.mjs'));
+await cp(path('src/scrollspy.mjs'), path('dist/scrollspy.mjs'));
 await cp(path('src/validation.mjs'), path('dist/validation.mjs'));
 await cp(path('assets/shirt-size-guide.webp'), path('dist/assets/shirt-size-guide.webp'));
 const validation = (await readFile(path('src/validation.mjs'), 'utf8')).replace(/^export /gm, '');
