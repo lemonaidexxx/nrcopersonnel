@@ -1,13 +1,7 @@
-# Current deployment: Google Sheets + GitHub only
+# Form Hosting
 
-The Cloudflare setup has been replaced by a Google-hosted form. Use the complete
-instructions in [../google-only/README.md](../google-only/README.md).
+GitHub Pages serves the form page from `docs/`.
 
-Only google-only/Code.gs, google-only/Index.html and google-only/appsscript.json
-are pasted into the Apps Script project. The spreadsheet and tab are preconfigured.
-Run setupSheet from the sheet-bound editor, then deploy as a web app executing as
-Me with access Anyone. Share the Google /exec URL after verifying a real test write.
+Google Apps Script displays the embedded form and saves responses to Google Sheets.
 
-No Bash, external hosting, Turnstile keys, relay secret, or manual Script properties
-are required. The legacy Cloudflare files remain for regression testing, not use.
-GitHub stores source; it does not automatically publish Apps Script changes.
+`config.js` contains the public form address and Google web-app address.
