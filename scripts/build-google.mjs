@@ -1,4 +1,3 @@
-// Maintainers only. Owners deploy the three prebuilt google-only files by copying.
 import { readFile, writeFile, mkdir, cp } from 'node:fs/promises';
 const path = name => new URL('../' + name, import.meta.url);
 const read = name => readFile(path(name), 'utf8');
