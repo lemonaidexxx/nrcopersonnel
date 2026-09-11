@@ -13,7 +13,6 @@ function doGet() {
     .addMetaTag('viewport', 'width=device-width, initial-scale=1');
 }
 
-// Deliberately read-only: this is not an authentication or CAPTCHA endpoint.
 function getFormSession() {
   try {
     if (!GOOGLE_CONFIG_.acceptingResponses) return { ok: false, code: 'CLOSED', message: 'This form is not accepting submissions.' };
@@ -76,8 +75,7 @@ function assertSession_(cache, token) {
   if (!session || !Number.isFinite(session.expiresAt) || session.expiresAt <= Date.now()) throw new Error('SESSION_EXPIRED');
 }
 function throttleNewRecord_(cache, token) {
-  // Best-effort shared and session limits, NOT an IP limiter or identity check.
-  // Cache may evict counters early; keep deployment access and Google quotas in mind.
+
   const minute = Math.floor(Date.now() / 60000);
   const keys = ['nrco:new:' + minute, 'nrco:new:' + minute + ':' + token];
   const counts = keys.map(key => Number(cache.get(key) || 0));
@@ -106,20 +104,19 @@ function saveSubmission_(data, requestId, token) {
     if (lastRow + 1 > sheet.getMaxRows()) sheet.insertRowsAfter(sheet.getMaxRows(), 100);
     const escaped = "'" + GOOGLE_CONFIG_.sheetName.replace(/'/g, "''") + "'";
     const target = escaped + '!A' + (lastRow + 1) + ':L' + (lastRow + 1);
-    // RAW avoids formula execution and preserves leading 0/+, without changing names.
+
     const write = Sheets.Spreadsheets.Values.update({ majorDimension: 'ROWS', values: [row] }, GOOGLE_CONFIG_.spreadsheetId, target, { valueInputOption: 'RAW' });
     if (write.updatedRows !== 1) throw new Error('WRITE_NOT_CONFIRMED');
     const confirm = Sheets.Spreadsheets.Values.get(GOOGLE_CONFIG_.spreadsheetId, target, { valueRenderOption: 'UNFORMATTED_VALUE' });
     const recorded = confirm.values && confirm.values[0];
     if (!recorded || row.some((value, i) => String(recorded[i] ?? '') !== value)) throw new Error('WRITE_NOT_CONFIRMED');
-    // Do not return other people's records, duplicate details, Sheet ID, or row number.
+
     return { ok: true, submissionId: id, timestamp };
   } finally { lock.releaseLock(); }
 }
 
 function setupSheet() {
-  // Guard the administrative entrypoint: bound-container context is unavailable
-  // in web-app RPC. Run this function only in the editor opened from the Sheet.
+
   let active;
   try { active = SpreadsheetApp.getActiveSpreadsheet(); } catch (_) { /* Not an editor context. */ }
   if (!active || active.getId() !== GOOGLE_CONFIG_.spreadsheetId) {
