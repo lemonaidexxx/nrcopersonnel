@@ -118,7 +118,6 @@ export async function handleRequest(request, env, fetcher = fetch) {
       if (result?.code === 'IDEMPOTENCY_CONFLICT') throw new ApiError(409, 'This submission reference was already used for different information. Reload before submitting a new entry.');
       throw new ApiError(503, 'We could not confirm that your information was saved. Keep this page open and retry with the same information.');
     }
-    // Never disclose possible duplicates, existing personnel data or spreadsheet coordinates.
     return protect(json({ ok: true, submissionId: result.submissionId, timestamp: result.timestamp }));
   } catch (error) {
     const status = error instanceof ApiError ? error.status : 503;
