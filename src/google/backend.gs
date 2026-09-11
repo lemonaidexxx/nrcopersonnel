@@ -1,5 +1,3 @@
-// Google-hosted form. All helpers end in '_' so browsers cannot call them by RPC.
-// Only this server file knows the destination. Old Script properties are ignored.
 const GOOGLE_CONFIG_ = Object.freeze({
   spreadsheetId: '1-nk-U7L0qWkKvYBhg2bpnppTV6vNw2r16ZOoH9H9b74',
   sheetName: 'Sheet1',
