@@ -1,5 +1,3 @@
-// Google's iframe sandbox must not navigate away when a section link is selected.
-// Keep actual fragment hrefs for semantics, and scroll inside this document.
 function jumpTo(hash, focus = false) {
   const target = document.getElementById(String(hash).replace(/^#/, ''));
   if (!target) return;
