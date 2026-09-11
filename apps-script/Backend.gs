@@ -1,4 +1,3 @@
-// Build source. Paste the generated Code.gs into Apps Script, NOT this partial source file.
 function getConfig_() {
   const properties = PropertiesService.getScriptProperties().getProperties();
   if (!properties.SPREADSHEET_ID || !properties.SHEET_NAME || !/^[0-9a-f]{64}$/i.test(properties.RELAY_SECRET || '')) {
