@@ -1,4 +1,3 @@
-// Local visual preview only. No outgoing requests, credentials, or real submissions.
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 const root = new URL('../dist/', import.meta.url);
