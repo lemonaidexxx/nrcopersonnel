@@ -128,7 +128,7 @@ function setupSheet() {
     const sheet = getSheet_();
     if (sheet.getLastRow() === 0) sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
     assertHeaders_(sheet);
-    // Verify the advanced Sheets service and authorization without inserting data.
+
     Sheets.Spreadsheets.Values.get(GOOGLE_CONFIG_.spreadsheetId, "'Sheet1'!A1:L1");
     sheet.setFrozenRows(1);
     sheet.getRange(1, 1, 1, HEADERS.length).setBackground('#172d4b').setFontColor('#ffffff').setFontWeight('bold').setWrap(true);
