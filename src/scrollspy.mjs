@@ -1,6 +1,3 @@
-// Same-document navigation, independent of submission availability.
-// IO observes each fragment target; a small rAF-throttled fallback handles fast
-// jumps, gaps, and the bottom of the page where the last heading cannot reach the top.
 const nav = document.querySelector('#section-nav');
 const header = document.querySelector('#sticky-header');
 const form = document.querySelector('#personnel-form');
