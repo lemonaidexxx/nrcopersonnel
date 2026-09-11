@@ -1,4 +1,3 @@
-// Runs inside Google's HTML Service. No external host, API key, or relay secret.
 const form = document.querySelector('#personnel-form');
 const button = document.querySelector('#submit-button');
 const label = document.querySelector('#submit-label');
