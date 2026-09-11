@@ -1,4 +1,3 @@
-// Run after the normal Google-only build. End users only paste the built files.
 import { readFile, writeFile, mkdir, cp } from 'node:fs/promises';
 import { PUBLIC_FORM_URL } from '../docs/config.js';
 const path = name => new URL('../' + name, import.meta.url);
