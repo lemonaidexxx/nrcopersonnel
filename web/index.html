@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#17354b">
+  <title>Personnel Information Update | NRCO</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.mjs"></script>
+</head>
+<body>
+  <a class="skip-link" href="#personnel-form">Skip to form</a>
+  <header class="masthead">
+    <div class="masthead-inner"><span class="wordmark" aria-hidden="true">NRCO</span><span>National Reintegration<br>Center for OFWs</span></div>
+  </header>
+  <main class="page">
+    <div class="intro"><p class="eyebrow">PERSONNEL RECORDS</p><h1>Personnel Information Update</h1><p>Please provide your current personnel details and preferred shirt size.</p></div>
+    <div id="availability" class="notice" role="status">Checking form availability...</div>
+    <noscript><p class="notice error">JavaScript is required to validate and submit this form. Please enable it and reload.</p></noscript>
+    <section id="success" class="success-card" hidden aria-labelledby="success-title" tabindex="-1">
+      <p class="eyebrow">SUBMISSION COMPLETE</p><h2 id="success-title">Your information has been successfully submitted.</h2>
+      <p>Keep this reference for your records.</p><p class="reference" id="reference"></p>
+      <button id="start-over" type="button" class="secondary">Submit another response</button>
+    </section>
+    <form id="personnel-form" class="form-card" novalidate>
+      <div class="form-heading"><h2>Your information</h2><p>Fields marked <span class="required">*</span> are required.</p></div>
+      <div id="form-error" class="notice error" role="alert" tabindex="-1" hidden></div>
+      <fieldset><legend><span class="step" aria-hidden="true">01</span>Personal information</legend><div class="fields three">{{personal}}</div></fieldset>
+      <fieldset><legend><span class="step" aria-hidden="true">02</span>Designation and office</legend><div class="fields appointment">{{appointment}}</div></fieldset>
+      <fieldset><legend><span class="step" aria-hidden="true">03</span>Contact details</legend><div class="fields two">{{contact}}</div></fieldset>
+      <fieldset><legend><span class="step" aria-hidden="true">04</span>Shirt size</legend>
+        <div class="size-layout"><div>{{shirt}}<p class="helper">Check the guide before choosing. Measurements are in inches.</p>
+          <p class="helper">Width is measured flat across the front, not around the body.</p></div>
+          <figure class="size-guide"><button type="button" id="open-guide" class="image-button" aria-haspopup="dialog" aria-label="Enlarge the shirt-size reference guide">
+            <img src="/assets/shirt-size-guide.webp" width="569" height="300" alt="Adult shirt-size guide. Flat front width and shirt length are measured in inches. Select Enlarge size guide for a text table.">
+            <span>Enlarge size guide <span aria-hidden="true">&#8599;</span></span></button>
+          </figure></div>
+      </fieldset>
+      <div class="honeypot" aria-hidden="true"><label for="website">Leave this field empty</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+      <div class="submit-area"><div><div id="turnstile-container"></div><p id="verification-help" class="helper">Security verification will appear when submissions are enabled.</p></div>
+        <button id="submit-button" type="submit" disabled><span id="submit-label">Submit information</span><span aria-hidden="true">&#8594;</span></button>
+      </div>
+      <p id="submit-status" class="submit-status" role="status" aria-live="polite"></p>
+    </form>
+    <footer>National Reintegration Center for OFWs</footer>
+  </main>
+  <dialog id="guide-dialog" aria-labelledby="guide-title">
+    <div class="dialog-heading"><h2 id="guide-title">Adult shirt-size guide</h2><button type="button" id="close-guide" class="secondary">Close</button></div>
+    <img src="/assets/shirt-size-guide.webp" width="569" height="300" alt="Uploaded adult T-shirt measurement reference; measurements are also listed below.">
+    <div class="table-wrap"><table><caption>Available form sizes &mdash; measurements in inches</caption><thead><tr><th scope="col">Size</th><th scope="col">Front width</th><th scope="col">Length</th></tr></thead>
+      <tbody><tr><th scope="row">S</th><td>19</td><td>27</td></tr><tr><th scope="row">M</th><td>20</td><td>28</td></tr><tr><th scope="row">L</th><td>21</td><td>29</td></tr><tr><th scope="row">XL</th><td>22</td><td>30</td></tr><tr><th scope="row">XXL</th><td>23</td><td>31</td></tr><tr><th scope="row">XXXL</th><td>24</td><td>32</td></tr></tbody></table></div>
+    <p class="helper">The supplied guide states a &plusmn;5% tolerance. Its 2XSMALL and XSMALL sizes are not offered in this form.</p>
+  </dialog>
+</body>
+</html>
