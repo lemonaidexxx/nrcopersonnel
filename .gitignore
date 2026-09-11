@@ -7,3 +7,8 @@ dist/
 .clasp.json
 *.log
 .DS_Store
+
+# Ready-to-paste Google files are published as a GitHub Actions artifact.
+google-only/Code.gs
+google-only/Index.html
+google-only/appsscript.json
