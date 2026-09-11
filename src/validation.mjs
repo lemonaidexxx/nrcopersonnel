@@ -1,4 +1,3 @@
-// Shared by the browser, Worker, and generated Apps Script. Never trust the browser alone.
 export const DESIGNATIONS = Object.freeze([
   'Undersecretary', 'Assistant Secretary', 'Director IV', 'Executive Assistant III',
   'Chief Labor and Employment Officer', 'Supervising Labor and Employment Officer',
