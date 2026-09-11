@@ -1,57 +1,62 @@
 # NRCO Personnel Information Update
 
-## Current setup: Google Sheets + GitHub only
+## Current respondent link: GitHub Pages
 
-**Cloudflare is no longer required.** Google Apps Script hosts the form and saves
-responses in the private Google Sheet. GitHub keeps the source code and size guide.
-The respondent address is the deployed Google web-app `/exec` URL.
+**Start here: [github-pages/README.md](github-pages/README.md).**
 
-**Start here: [google-only/README.md](google-only/README.md).**
+The public address to publish is **https://lemonaidexxx.github.io/nrcopersonnel/**.
+GitHub Pages serves the container page; the existing Google Apps Script form runs
+inside it and stores responses in the private Google Sheet. No Cloudflare, Bash,
+Turnstile, or relay secret is required.
 
-Download the supplied deployment ZIP, or open **Actions > Test personnel form >
-a successful run > Artifacts > NRCO-Google-Only**. GitHub builds the ready-to-paste
-files automatically. From the ZIP, copy these three files into the Apps Script
-project opened from **Extensions > Apps Script** in the spreadsheet:
+The supplied Google web-app URL is configured in docs/config.js. It is publicly
+inspectable and is not a credential. Do not put private credentials or personnel
+data in this public repository.
 
-1. Code.gs: replace the entire old Code.gs.
-2. Index.html: create an HTML file named Index.
-3. appsscript.json: replace the manifest.
+### Owner setup
 
-The Google-specific source is in src/google/, shared form definitions and layout
-are in src/ and web/, and scripts/build-google.mjs packages the complete files.
+1. Download the NRCO-GitHub-Pages package supplied in chat, or the artifact with
+   that name in Actions > Test personnel form > a successful run.
+2. Replace Code.gs AND Index.html in the existing NRCO Webform Apps Script project
+   with that package's files. The included manifest matches the Google-only one.
+3. In Apps Script update the SAME deployment: Manage deployments > Edit > New
+   version > Deploy. The configured /exec address must remain unchanged.
+4. In this repository's Settings > Pages select Deploy from a branch, main, /docs,
+   then Save. This one-time action is separate from the test workflow.
+5. Open the GitHub address in a private browser window and confirm one real test
+   submission against Sheet1 before sharing the link.
 
-Run setupSheet, authorize, then deploy as a web app: Execute as Me; access Anyone.
-Keep the Sheet private. No Bash, npm commands, relay secret, Turnstile widget,
-Cloudflare account, or manual Script properties are needed for the owner setup.
-
-All eight information fields are required, including Middle Name. The approved
+All eight respondent fields remain required, including Middle Name. The approved
 15 designations, six offices, Philippine mobile validation, shirt-size dropdown,
-reference guide, solid navy theme and sticky scroll-linked navigation are retained.
-A-L mapping, duplicate review, RAW text writes and safe retries are unchanged.
+original guide, solid navy shades and sticky scroll-linked navigation remain.
+The A-L spreadsheet mapping, duplicate review, RAW writes and safe retries are
+unchanged. No Google Sheet records are modified by this hosting change.
 
-**Status:** complete code and simulated tests are prepared. The owner must copy
-these files into Apps Script, deploy, and verify a live submission before sharing.
-Source changes in GitHub do not automatically update Apps Script.
+### What changed
 
-The earlier Cloudflare files under apps-script/, src/worker.mjs and wrangler.jsonc
-are retained only as legacy code and regression fixtures. Do not follow their old
-setup or paste their receiver into the new project. See google-only/ for the active
-instructions. No existing Cloudflare account or deployment has been changed here.
+The matching Google files enable iframe embedding and keep the form hidden until
+the expected GitHub top-level page replies to an origin/window/nonce check. This
+is a client-side framing mitigation, not staff authentication or an HTTP
+frame-ancestors allowlist. See the deployment guide for limitations and testing.
 
-## Development only
+The standalone google-only/ package remains for reference. It does not support
+this embedding handshake. Earlier apps-script/ and Cloudflare files are legacy
+regression fixtures; do not use them for this deployment.
 
-The form model uses the attributed adaptation of filp/form-api under vendor/.
-Build and regression tests have no npm dependencies and require Node.js 22+.
-Owners deploying the ready-to-paste files do not need to run these commands.
+### Maintainers
+
+Source: src/google/ and shared src/ and web/ files. Google-only packaging:
+scripts/build-google.mjs. Embed packaging: scripts/build-pages.mjs. Public static
+site: docs/. All owner instructions are point-and-click; no local tools needed.
+
+Build/test commands for maintainers (Node.js 22+):
 
 ```sh
 npm run build
+node scripts/build-pages.mjs
 npm test
 ```
 
-The build also generates legacy fixtures for regression tests; deploy only the
-three google-only files. No automated deployment or credentials are configured.
-
-Read the security limitations and live test checklist in google-only/README.md.
-The public form has basic spam controls, not a CAPTCHA, staff identity verification,
-or Cloudflare-grade edge protection. Do not put personnel data into GitHub.
+GitHub Actions uploads both Google-only and GitHub-embed packages. It does not
+update Apps Script or enable GitHub Pages. Keep the generated Google file pair in
+sync when deploying. The model remains the attributed filp/form-api adaptation.

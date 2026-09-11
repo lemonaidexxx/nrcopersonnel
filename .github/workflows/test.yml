@@ -12,6 +12,7 @@ jobs:
           node-version: '22'
       - run: npm run build
       - run: git diff --exit-code -- apps-script/Code.gs
+      - run: node scripts/build-pages.mjs
       - run: npm test
       - uses: actions/upload-artifact@v4
         with:
@@ -21,4 +22,13 @@ jobs:
             google-only/Index.html
             google-only/appsscript.json
             google-only/README.md
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NRCO-GitHub-Pages
+          path: |
+            github-pages/Code.gs
+            github-pages/Index.html
+            github-pages/appsscript.json
+            github-pages/README.md
           if-no-files-found: error

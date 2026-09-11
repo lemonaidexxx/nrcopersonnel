@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#172d4b">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; frame-src https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <title>Personnel Information Update | NRCO</title>
+  <link rel="stylesheet" href="./pages.css">
+  <script type="module" src="./pages.js"></script>
+</head>
+<body>
+  <main aria-label="NRCO personnel form">
+    <div id="loading-panel" class="loading-panel">
+      <div class="panel-inner">
+        <p class="eyebrow">NATIONAL REINTEGRATION CENTER FOR OFWs</p>
+        <h1 id="loading-title">Loading personnel form</h1>
+        <p id="loading-message" role="status">Connecting to the form. Please wait.</p>
+        <button type="button" id="reload-form" hidden>Reload form</button>
+        <a id="public-link" href="https://lemonaidexxx.github.io/nrcopersonnel/" target="_blank" rel="noopener noreferrer" hidden>Open the official GitHub form</a>
+        <noscript>JavaScript is required. Enable it and reload this page.</noscript>
+      </div>
+    </div>
+    <div id="frame-slot" aria-busy="true"></div>
+  </main>
+</body>
+</html>
